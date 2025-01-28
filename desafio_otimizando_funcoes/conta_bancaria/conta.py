@@ -65,7 +65,9 @@ class GerenciadorDeContaCorrente:
         """
         conta = cls.buscar_conta_por_numero(numero_da_conta)
         if conta:
+            # Remover a conta da lista de contas
             cls._lista_de_contas.remove(conta)
             print(f"Conta número {numero_da_conta} removida com sucesso.")
             return True
+        print(f"Conta número {numero_da_conta} não encontrada.")
         return False

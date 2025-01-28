@@ -32,10 +32,22 @@ def obter_dia_e_hora():
 
 
 if __name__ == "__main__":
+    ClienteManager()
+    GerenciadorDeContaCorrente()
 
     while True:
-        cpf = input("Digite seu cpf: ")
-        cpf = "".join(filter(str.isdigit, cpf))
+        try:
+            if cpf:
+                mudar_cpf = input(
+                    f'Quer mudar o CPF? Se sim, digite "sim", se não seguiremos com o cpf {cpf}. '
+                )
+                if mudar_cpf.lower == "sim":
+                    cpf = input("Digite seu cpf: ")
+                    cpf = "".join(filter(str.isdigit, cpf))
+        except:
+            cpf = input("Digite seu cpf: ")
+            cpf = "".join(filter(str.isdigit, cpf))
+
         cliente = ClienteManager.buscar_cliente_por_cpf(cpf)
 
         menu = """
@@ -106,17 +118,24 @@ if __name__ == "__main__":
         # Consultar lista de contas abertas
         if resposta.lower() == "d":
             if cliente:
-                cliente.listar_contas()
+                print(cliente.listar_contas_do_usuario())
             else:
                 print("Por favor, realize seu cadastro antes de criar uma conta!")
                 input("Aperte qualquer tecla para continuar")
 
-        # Remover uma conta corrente específica
         if resposta.lower() == "e":
             if cliente:
-                cliente.listar_contas()
-                ans = input("Digite o número da conta que deseja deletar: ")
-                GerenciadorDeContaCorrente.remover_conta(ans)
+                print(cliente.listar_contas_do_usuario())
+                ans = int(input("Digite o número da conta que deseja deletar: "))
+                # Remover a conta do GerenciadorDeContaCorrente
+                if GerenciadorDeContaCorrente.remover_conta(ans):
+                    # Caso a conta seja removida com sucesso, também remova da lista de contas do cliente
+                    for conta in cliente.contas:
+                        if conta.numero_da_conta == ans:
+                            cliente.contas.remove(conta)
+                            break
+                else:
+                    print("Falha ao remover a conta.")
             else:
                 print("Por favor, realize seu cadastro antes de criar uma conta!")
                 input("Aperte qualquer tecla para continuar")
@@ -128,8 +147,6 @@ if __name__ == "__main__":
             else:
                 print("Cadastro removido com sucesso!")
                 input("Aperte qualquer tecla para continuar")
-
-            ...
 
         if resposta.lower() == "q":
             sys.exit()
