@@ -14,18 +14,23 @@ class ContaCorrente:
         if valor > self.saldo:
             print("Saldo insuficiente para o saque.")
         else:
-            self.saldo -= valor
-            self.historico_transacoes.append(
-                f"Saque de R${valor:.2f} - Saldo restante: R${self.saldo:.2f}"
-            )
-            print(f"O saque foi feito. Saldo restante: R${self.saldo}")
+            if self.numero_de_saques > 0:
+                self.saldo -= valor
+                self.numero_de_saques -= 1
+                self.historico_transacoes.append(
+                    f"Saque de R${valor:.2f} - Saldo restante: R${self.saldo:.2f}"
+                )
+                print(f"O saque foi feito. Saldo restante: R${self.saldo}")
+            else:
+                print("Problema ao sacar: Número de saques insuficientes.")
+                return None
 
     def depositar(self, valor):
         self.saldo += valor
         self.historico_transacoes.append(
             f"Depósito de R${valor:.2f} - Saldo atual: R${self.saldo:.2f}"
         )
-        print(f"O depósito foi feito. Saldo restante: R${self.saldo}")
+        print(f"O depósito foi feito. Saldo atual: R${self.saldo}")
 
     def exibir_extrato(self):
         """
@@ -43,7 +48,7 @@ class ContaCorrente:
             print(f"Saques restantes: {self.numero_de_saques}")
 
     def __str__(self):
-        texto = f"""A conta corrente de número {self.numero_da_conta} da agência {self.agencia} pertence a {self.cliente.nome}."""
+        texto = f"""C/C número: {self.numero_da_conta} | Agência: {self.agencia} | Saldo: {self.saldo} | Dono: {self.cliente.nome}."""
         return texto
 
 
